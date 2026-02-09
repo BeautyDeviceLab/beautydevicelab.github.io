@@ -269,91 +269,72 @@ p{ margin: 0 0 14px 0; }
   margin: 26px 0;
 }
 
-/* -------------------- Header / Nav -------------------- */
-.site-header{
-  position: sticky;
-  top: 0;
-  z-index: 60;
-  backdrop-filter: blur(var(--blur));
-  -webkit-backdrop-filter: blur(var(--blur));
-  background: linear-gradient(180deg, rgba(10,10,16,.78) 0%, rgba(10,10,16,.42) 100%);
-  border-bottom: 1px solid rgba(255,255,255,.10);
+/* ==================== Brand Logo (Menu + Footer) ==================== */
+
+/* Remplace le carré .brand-badge par ton vrai logo IMG */
+.brand-logo{
+  width: 44px;
+  height: 44px;
+  flex: 0 0 44px;
+  border-radius: 14px;
+  padding: 6px;
+  background: linear-gradient(135deg, rgba(255,79,216,.18), rgba(217,180,108,.12));
+  border: 1px solid rgba(255,255,255,.14);
+  box-shadow: var(--shadow-glow);
+  object-fit: contain;
+  image-rendering: auto;
 }
 
-.nav{
+/* Texte à droite du logo */
+.brand-text{
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 14px;
-  padding: 14px 0;
-}
-
-.brand{
-  display: inline-flex;
-  gap: 10px;
-  align-items: center;
+  flex-direction: column;
   min-width: 0;
 }
 
-.brand-badge{
-  width: 38px; height: 38px;
-  border-radius: 14px;
-  background: linear-gradient(135deg, rgba(255,79,216,.22), rgba(217,180,108,.18));
-  border: 1px solid rgba(255,255,255,.14);
-  box-shadow: var(--shadow-glow);
-  position: relative;
-  overflow: hidden;
+/* Option: si tu veux que le logo devienne plus compact sur mobile */
+@media (max-width: 560px){
+  .brand-logo{
+    width: 40px;
+    height: 40px;
+    flex-basis: 40px;
+    padding: 6px;
+    border-radius: 13px;
+  }
+  .brand-sub{
+    display: none; /* garde le menu clean sur mobile */
+  }
 }
 
-.brand-badge::after{
-  content:"";
-  position:absolute;
-  inset:-40% -30%;
-  background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.32), transparent 45%);
-  transform: rotate(14deg);
-}
-
-.brand-name{
-  font-weight: 900;
-  letter-spacing: -0.02em;
-  font-size: 15px;
-  line-height: 1.05;
-}
-.brand-sub{
-  font-size: 12px;
-  color: var(--muted);
-  margin-top: 2px;
-}
-
-.nav-links{
-  display: flex;
-  gap: 10px;
+/* ==================== Footer brand ==================== */
+.footer-brand{
+  display: inline-flex;
   align-items: center;
-  flex-wrap: wrap;
-  justify-content: flex-end;
+  gap: 12px;
+  min-width: 0;
 }
 
-.nav-links a{
-  padding: 8px 12px;
-  border-radius: 999px;
-  border: 1px solid rgba(255,255,255,.10);
-  background: rgba(255,255,255,.03);
-  color: rgba(255,255,255,.82);
-  font-weight: 650;
-  font-size: 13px;
-  transition: transform var(--dur) var(--ease), border-color var(--dur) var(--ease), background var(--dur) var(--ease);
+.footer-logo{
+  width: 56px;
+  height: 56px;
+  flex: 0 0 56px;
+  border-radius: 18px;
+  padding: 8px;
+  background: linear-gradient(135deg, rgba(255,79,216,.16), rgba(217,180,108,.12));
+  border: 1px solid rgba(255,255,255,.12);
+  box-shadow: var(--shadow-glow);
+  object-fit: contain;
 }
 
-.nav-links a:hover{
-  transform: translateY(-1px);
-  border-color: rgba(255,255,255,.18);
-  background: rgba(255,255,255,.05);
+.footer-brand-text{
+  min-width: 0;
 }
 
-.nav-links a[aria-current="page"]{
-  border-color: rgba(255,79,216,.35);
-  box-shadow: 0 0 0 4px rgba(255,79,216,.12);
-  color: var(--pearl);
+/* Option: hover subtle premium */
+.brand:hover .brand-logo,
+.footer-brand:hover .footer-logo{
+  border-color: rgba(255,79,216,.26);
+  box-shadow: 0 0 0 4px rgba(255,79,216,.10), var(--shadow-glow);
 }
 
 /* Mobile */
