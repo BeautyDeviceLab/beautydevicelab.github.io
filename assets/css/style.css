@@ -1270,3 +1270,22 @@ select:focus{
   background: rgba(255,79,216,.07);
   color: var(--pearl);
 }
+
+/* PRO image framing for your 800x800 assets */
+.product .product-media{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.product .product-media img,
+.hero .hero-media img{
+  filter: saturate(1.05) contrast(1.05);
+  transform: translateZ(0);
+}
+
+.product .product-media img{
+  max-width: 520px;
+  width: 100%;
+}
+
