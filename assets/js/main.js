@@ -1,15 +1,15 @@
 /* =========================================================
-   BeautyDeviceLab — assets/js/app.js (ULTRA LUXE “BARBIE”)
-   Features:
-   - Mobile menu toggle (body data-menu="open")
-   - Smooth scroll (safe)
+   BeautyDeviceLab — main.js (ULTRA LUXE “BARBIE” v2)
+   - Mobile menu toggle (body data-menu="open") + scroll lock no-jump
+   - Smooth anchor scroll (offset auto selon header sticky)
    - Active section highlight (optional)
    - Table responsive labels helper (optional)
    - Sticky CTA show/hide (optional)
-   - Affiliate click tracking hook (GA4 gtag if present)
-   - Theme toggle (optional: dark/light) with localStorage
-   - Tiny utilities (copy link, TOC builder optional)
-   No dependencies.
+   - Affiliate click tracking (GA4 gtag if present)
+   - Theme toggle (optional) with localStorage
+   - TOC builder (optional)
+   - Copy link buttons (optional)
+   - External links rel hygiene
    ========================================================= */
 
 (() => {
@@ -19,32 +19,87 @@
   const CFG = {
     menuOpenAttr: "data-menu",
     menuOpenValue: "open",
-    themeAttr: "data-theme", // matches CSS :root[data-theme="light"]
+
+    headerSelector: ".site-header",
+    smoothScrollExtraOffset: 10,
+
+    activeSectionOffset: 140,
+    activeLinkClass: "is-active",
+    activeScopeSelector: "main", // set "" to disable scoping
+
+    stickyCtaSelector: ".sticky-cta",
+    stickyCtaRevealAfter: 420,
+
+    themeAttr: "data-theme", // :root[data-theme="light"]
     themeKey: "bdl_theme",
     defaultTheme: "dark",
-    smoothScrollOffset: 10, // px
+
     tocMinHeadings: 3,
-    activeSectionOffset: 120, // px from top
-    stickyCtaSelector: ".sticky-cta",
-    stickyCtaRevealAfter: 420, // px scrolled
   };
 
   /* -------------------- Helpers -------------------- */
   const $ = (sel, root = document) => root.querySelector(sel);
   const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
 
-  const clamp = (n, min, max) => Math.max(min, Math.min(max, n));
-
   const prefersReducedMotion = () =>
     window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  const safeJsonParse = (s, fallback = null) => {
-    try { return JSON.parse(s); } catch { return fallback; }
+  const rafThrottle = (fn) => {
+    let ticking = false;
+    return (...args) => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        ticking = false;
+        fn(...args);
+      });
+    };
   };
 
+  const getHeaderOffset = () => {
+    const header = $(CFG.headerSelector);
+    const h = header ? Math.ceil(header.getBoundingClientRect().height || 0) : 0;
+    return h + CFG.smoothScrollExtraOffset;
+  };
+
+  /* -------------------- Scroll lock (no page jump) -------------------- */
+  const ScrollLock = (() => {
+    let savedY = 0;
+    let locked = false;
+
+    const lock = () => {
+      if (locked) return;
+      locked = true;
+
+      savedY = window.scrollY || window.pageYOffset || 0;
+      document.body.style.position = "fixed";
+      document.body.style.top = `-${savedY}px`;
+      document.body.style.left = "0";
+      document.body.style.right = "0";
+      document.body.style.width = "100%";
+    };
+
+    const unlock = () => {
+      if (!locked) return;
+      locked = false;
+
+      const top = document.body.style.top;
+      document.body.style.position = "";
+      document.body.style.top = "";
+      document.body.style.left = "";
+      document.body.style.right = "";
+      document.body.style.width = "";
+
+      const y = top ? Math.abs(parseInt(top, 10)) : savedY;
+      window.scrollTo(0, y);
+    };
+
+    return { lock, unlock };
+  })();
+
   const setBodyMenu = (isOpen) => {
-    document.body.setAttribute(CFG.menuOpenAttr, isOpen ? CFG.menuOpenValue : "");
-    if (!isOpen) document.body.removeAttribute(CFG.menuOpenAttr);
+    if (isOpen) document.body.setAttribute(CFG.menuOpenAttr, CFG.menuOpenValue);
+    else document.body.removeAttribute(CFG.menuOpenAttr);
   };
 
   const isMenuOpen = () =>
@@ -57,21 +112,24 @@
     if (!btn || !nav) return;
 
     const closeMenu = () => {
+      if (!isMenuOpen()) return;
       setBodyMenu(false);
       btn.setAttribute("aria-expanded", "false");
+      ScrollLock.unlock();
     };
 
     const openMenu = () => {
+      if (isMenuOpen()) return;
       setBodyMenu(true);
       btn.setAttribute("aria-expanded", "true");
+      ScrollLock.lock();
     };
 
     btn.addEventListener("click", () => {
-      const open = isMenuOpen();
-      open ? closeMenu() : openMenu();
+      isMenuOpen() ? closeMenu() : openMenu();
     });
 
-    // Close when clicking a nav link (mobile drawer)
+    // Close on nav link click (mobile)
     nav.addEventListener("click", (e) => {
       const a = e.target.closest("a");
       if (!a) return;
@@ -99,7 +157,6 @@
 
   /* -------------------- 2) Smooth Anchor Scroll -------------------- */
   function initSmoothScroll() {
-    // Let browser handle if reduced motion
     if (prefersReducedMotion()) return;
 
     document.addEventListener("click", (e) => {
@@ -113,65 +170,81 @@
       const target = document.getElementById(id);
       if (!target) return;
 
+      // If menu open on mobile, close first
+      if (isMenuOpen() && window.matchMedia("(max-width: 860px)").matches) {
+        setBodyMenu(false);
+        const btn = $("#menuToggle");
+        if (btn) btn.setAttribute("aria-expanded", "false");
+        ScrollLock.unlock();
+      }
+
       e.preventDefault();
 
       const rect = target.getBoundingClientRect();
-      const top = window.scrollY + rect.top - CFG.smoothScrollOffset;
+      const top = window.scrollY + rect.top - getHeaderOffset();
 
       window.scrollTo({ top, behavior: "smooth" });
-
-      // Update URL hash without jump
       history.pushState(null, "", `#${id}`);
     });
   }
 
   /* -------------------- 3) Active Section Highlight -------------------- */
   function initActiveSection() {
-    const links = $$('a[href^="#"]').filter(a => a.getAttribute("href").length > 1);
+    const scope = CFG.activeScopeSelector ? $(CFG.activeScopeSelector) : document;
+    if (!scope) return;
+
+    const links = $$('a[href^="#"]', scope)
+      .filter((a) => (a.getAttribute("href") || "").length > 1)
+      .filter((a) => document.getElementById(a.getAttribute("href").slice(1)));
+
     if (!links.length) return;
 
     const targets = links
-      .map(a => document.getElementById(a.getAttribute("href").slice(1)))
+      .map((a) => document.getElementById(a.getAttribute("href").slice(1)))
       .filter(Boolean);
-
-    if (!targets.length) return;
 
     const setActive = () => {
       const y = window.scrollY + CFG.activeSectionOffset;
-
       let activeId = "";
+
       for (const sec of targets) {
         if (sec.offsetTop <= y) activeId = sec.id;
       }
 
-      links.forEach(a => {
+      links.forEach((a) => {
         const isActive = a.getAttribute("href") === `#${activeId}`;
-        a.classList.toggle("is-active", isActive);
+        a.classList.toggle(CFG.activeLinkClass, isActive);
         if (isActive) a.setAttribute("aria-current", "true");
         else a.removeAttribute("aria-current");
       });
     };
 
     setActive();
-    window.addEventListener("scroll", () => requestAnimationFrame(setActive), { passive: true });
+    window.addEventListener("scroll", rafThrottle(setActive), { passive: true });
+    window.addEventListener("resize", rafThrottle(setActive));
   }
-
-  /* Optional CSS hook: you can style .is-active if you want */
-  // .nav-links a.is-active { ... }
 
   /* -------------------- 4) Responsive Table Labels Helper -------------------- */
   function initTableLabels() {
-    // For mobile stacked table: we rely on td[data-label]
-    // If the HTML doesn't have data-label, we can auto-add from headers.
     const tables = $$("table");
     if (!tables.length) return;
 
     tables.forEach((table) => {
       const thead = table.querySelector("thead");
       const tbody = table.querySelector("tbody");
-      if (!thead || !tbody) return;
+      if (!tbody) return;
 
-      const headers = $$("th", thead).map(th => (th.textContent || "").trim()).filter(Boolean);
+      let headers = [];
+
+      if (thead) {
+        headers = $$("th", thead).map((th) => (th.textContent || "").trim()).filter(Boolean);
+      } else {
+        const firstRow = table.querySelector("tr");
+        if (firstRow) {
+          headers = $$("th,td", firstRow).map((c) => (c.textContent || "").trim()).filter(Boolean);
+        }
+      }
+
       if (!headers.length) return;
 
       $$("tr", tbody).forEach((tr) => {
@@ -190,6 +263,8 @@
     const el = $(CFG.stickyCtaSelector);
     if (!el) return;
 
+    const fancy = !prefersReducedMotion();
+
     const update = () => {
       const show = window.scrollY > CFG.stickyCtaRevealAfter;
       el.style.opacity = show ? "1" : "0";
@@ -197,11 +272,14 @@
       el.style.pointerEvents = show ? "auto" : "none";
     };
 
-    // Initial styles for buttery entry
-    el.style.transition = "opacity 180ms cubic-bezier(.2,.8,.2,1), transform 180ms cubic-bezier(.2,.8,.2,1)";
-    update();
+    if (fancy) {
+      el.style.transition =
+        "opacity 180ms cubic-bezier(.2,.8,.2,1), transform 180ms cubic-bezier(.2,.8,.2,1)";
+    }
 
-    window.addEventListener("scroll", () => requestAnimationFrame(update), { passive: true });
+    update();
+    window.addEventListener("scroll", rafThrottle(update), { passive: true });
+    window.addEventListener("resize", rafThrottle(update));
   }
 
   /* -------------------- 6) Affiliate Click Tracking (GA4 gtag) -------------------- */
@@ -218,20 +296,23 @@
   }
 
   function initAffiliateTracking() {
-    // Track any anchor that looks like an affiliate link.
-    // You can mark explicitly with data-aff="Amazon" or class "js-aff".
     document.addEventListener("click", (e) => {
       const a = e.target.closest("a");
       if (!a) return;
 
       const href = a.getAttribute("href") || "";
+      if (!href) return;
+
+      const rel = (a.getAttribute("rel") || "").toLowerCase();
       const isExplicit = a.classList.contains("js-aff") || a.hasAttribute("data-aff");
+      const isSponsored = rel.includes("sponsored");
       const looksAmazon = /amazon\.(ca|com)\//i.test(href);
       const hasTag = /[?&]tag=/i.test(href);
 
-      if (isExplicit || (looksAmazon && hasTag)) {
+      if (isExplicit || isSponsored || (looksAmazon && hasTag)) {
         const label =
           a.getAttribute("data-label") ||
+          a.getAttribute("data-aff") ||
           a.getAttribute("aria-label") ||
           (a.textContent || "").trim().slice(0, 70) ||
           "affiliate";
@@ -246,21 +327,20 @@
     const t = (theme === "light" || theme === "dark") ? theme : CFG.defaultTheme;
     if (t === "light") document.documentElement.setAttribute(CFG.themeAttr, "light");
     else document.documentElement.removeAttribute(CFG.themeAttr);
-    localStorage.setItem(CFG.themeKey, t);
+    try { localStorage.setItem(CFG.themeKey, t); } catch {}
   }
 
   function getTheme() {
-    return localStorage.getItem(CFG.themeKey) || CFG.defaultTheme;
+    try { return localStorage.getItem(CFG.themeKey) || CFG.defaultTheme; }
+    catch { return CFG.defaultTheme; }
   }
 
   function initThemeToggle() {
-    // Optional button id="themeToggle"
     const btn = $("#themeToggle");
     setTheme(getTheme());
-
     if (!btn) return;
 
-    const syncText = () => {
+    const sync = () => {
       const t = getTheme();
       btn.setAttribute("aria-pressed", t === "light" ? "true" : "false");
       btn.setAttribute("data-theme", t);
@@ -269,10 +349,10 @@
     btn.addEventListener("click", () => {
       const next = getTheme() === "light" ? "dark" : "light";
       setTheme(next);
-      syncText();
+      sync();
     });
 
-    syncText();
+    sync();
   }
 
   /* -------------------- 8) Auto TOC Builder (optional) -------------------- */
@@ -287,18 +367,17 @@
   }
 
   function initTOC() {
-    // Create a TOC inside an element with id="toc"
     const toc = $("#toc");
     if (!toc) return;
 
-    const headings = $$("main h2, main h3").filter(h => (h.textContent || "").trim().length);
+    const headings = $$("main h2, main h3").filter((h) => (h.textContent || "").trim().length);
     if (headings.length < CFG.tocMinHeadings) return;
 
     const list = document.createElement("ul");
+    list.className = "toc-list";
     list.style.listStyle = "none";
     list.style.padding = "0";
     list.style.margin = "0";
-    list.className = "toc-list";
 
     headings.forEach((h) => {
       if (!h.id) h.id = slugify(h.textContent);
@@ -324,7 +403,6 @@
 
   /* -------------------- 9) Copy Link Buttons (optional) -------------------- */
   function initCopyLinks() {
-    // Any button/link with [data-copy-link] copies its URL value or current page URL
     document.addEventListener("click", async (e) => {
       const btn = e.target.closest("[data-copy-link]");
       if (!btn) return;
@@ -341,18 +419,32 @@
           btn.textContent = prev;
           btn.removeAttribute("data-copied");
         }, 1200);
-      } catch {
-        // Fallback: do nothing (clipboard may be blocked)
-      }
+      } catch {}
     });
   }
 
-  /* -------------------- 10) External links safety (nofollow noopener) -------------------- */
+  /* -------------------- 10) External links safety -------------------- */
   function initExternalLinks() {
     $$('a[target="_blank"]').forEach((a) => {
-      const rel = (a.getAttribute("rel") || "").split(/\s+/).filter(Boolean);
-      const want = ["noopener", "noreferrer"];
-      want.forEach(x => { if (!rel.includes(x)) rel.push(x); });
+      const href = a.getAttribute("href") || "";
+      const rel = (a.getAttribute("rel") || "")
+        .split(/\s+/)
+        .map((x) => x.trim())
+        .filter(Boolean);
+
+      const ensure = (token) => { if (!rel.includes(token)) rel.push(token); };
+
+      ensure("noopener");
+      ensure("noreferrer");
+
+      const isAffiliateish =
+        a.classList.contains("js-aff") ||
+        a.hasAttribute("data-aff") ||
+        /amazon\.(ca|com)\//i.test(href) ||
+        /[?&]tag=/i.test(href);
+
+      if (isAffiliateish) ensure("nofollow");
+
       a.setAttribute("rel", rel.join(" "));
     });
   }
