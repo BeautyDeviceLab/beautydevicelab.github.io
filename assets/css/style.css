@@ -1289,3 +1289,48 @@ select:focus{
   width: 100%;
 }
 
+/* =========================================================
+   VIDEO EMBED (YouTube) — responsive + Barbie luxe
+   Colle ce bloc à la FIN de style.css
+   ========================================================= */
+
+.video-embed{
+  position: relative;
+  width: 100%;
+  max-width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: var(--r-2xl);
+  overflow: hidden;
+
+  border: 1px solid rgba(255,255,255,.14);
+  background: rgba(255,255,255,.03);
+
+  box-shadow: var(--shadow-card);
+}
+
+.video-embed::before{
+  content:"";
+  position:absolute;
+  inset:-2px;
+  background:
+    radial-gradient(900px 260px at 18% 0%, rgba(255,79,216,.14), transparent 60%),
+    radial-gradient(800px 240px at 90% 10%, rgba(217,180,108,.10), transparent 60%);
+  pointer-events:none;
+  z-index: 1;
+}
+
+.video-embed iframe{
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  z-index: 2;
+}
+
+/* Optionnel: version "verticale" si un jour tu mets un short */
+.video-embed.is-vertical{
+  aspect-ratio: 9 / 16;
+  max-width: 520px;
+  margin-inline: auto;
+}
