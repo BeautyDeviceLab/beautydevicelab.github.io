@@ -269,44 +269,188 @@ p{ margin: 0 0 14px 0; }
   margin: 26px 0;
 }
 
-/* ==================== Brand Logo (Menu + Footer) ==================== */
+/* ==================== Brand Logo + Header Nav (UPDATED v2) ==================== */
 
-/* Remplace le carré .brand-badge par ton vrai logo IMG */
+/* Header sticky + glass */
+.site-header{
+  position: sticky;
+  top: 0;
+  z-index: 999; /* plus safe */
+  border-bottom: 1px solid rgba(255,255,255,.10);
+  background: rgba(11,11,18,.72);
+  backdrop-filter: blur(var(--blur));
+  -webkit-backdrop-filter: blur(var(--blur));
+}
+
+/* Row */
+.nav{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 0;
+  position: relative; /* anchor dropdown */
+}
+
+/* Brand */
+.brand{
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  max-width: 62%;
+  text-decoration: none;
+}
+
+/* ✅ Logo fix: never stretch, always centered */
 .brand-logo{
   width: 44px;
   height: 44px;
   flex: 0 0 44px;
+
   border-radius: 14px;
   padding: 6px;
+
   background: linear-gradient(135deg, rgba(255,79,216,.18), rgba(217,180,108,.12));
   border: 1px solid rgba(255,255,255,.14);
   box-shadow: var(--shadow-glow);
+
+  display: block;
   object-fit: contain;
+  object-position: center;
+  overflow: hidden;
+
+  /* avoid blurry scaling */
   image-rendering: auto;
 }
 
-/* Texte à droite du logo */
+/* Brand text */
 .brand-text{
   display: flex;
   flex-direction: column;
   min-width: 0;
 }
 
-/* Option: si tu veux que le logo devienne plus compact sur mobile */
+.brand-name{
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  color: var(--txt);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.brand-sub{
+  font-size: 12px;
+  color: var(--muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Desktop nav */
+.nav-links{
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.nav-links a{
+  padding: 8px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,.12);
+  background: rgba(255,255,255,.03);
+  color: rgba(255,255,255,.82);
+  font-weight: 800;
+  font-size: 13px;
+}
+
+.nav-links a:hover{
+  border-color: rgba(255,79,216,.28);
+  box-shadow: 0 0 0 4px rgba(255,79,216,.10);
+  color: var(--pearl);
+}
+
+.nav-links a[aria-current="page"]{
+  border-color: rgba(255,79,216,.35);
+  background: rgba(255,79,216,.10);
+  color: var(--pearl);
+}
+
+/* Hover brand */
+.brand:hover .brand-logo{
+  border-color: rgba(255,79,216,.26);
+  box-shadow: 0 0 0 4px rgba(255,79,216,.10), var(--shadow-glow);
+}
+
+/* Mobile menu button */
+.menu-toggle{
+  display: none;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+
+  border: 1px solid rgba(255,255,255,.14);
+  background: rgba(255,255,255,.04);
+  border-radius: 14px;
+  padding: 10px 12px;
+  box-shadow: var(--shadow-glow);
+  font-weight: 900;
+}
+
+/* Mobile dropdown */
+@media (max-width: 860px){
+  .brand{ max-width: 78%; }
+  .menu-toggle{ display: inline-flex; }
+
+  .nav-links{
+    display: none;
+    position: absolute;
+    left: 0;
+    right: 0;
+
+    /* ✅ always below header row */
+    top: calc(100% + 10px);
+
+    padding: 14px;
+    border-radius: var(--r-xl);
+    border: 1px solid rgba(255,255,255,.14);
+    background: rgba(15,15,25,.90);
+
+    backdrop-filter: blur(var(--blur));
+    -webkit-backdrop-filter: blur(var(--blur));
+    box-shadow: var(--shadow-card);
+
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+
+    /* ✅ prevent overflow on small screens */
+    max-height: calc(100vh - 110px);
+    overflow: auto;
+  }
+
+  body[data-menu="open"] .nav-links{ display: flex; }
+
+  .nav-links a{
+    text-align: center;
+    padding: 12px 14px;
+  }
+}
+
 @media (max-width: 560px){
   .brand-logo{
     width: 40px;
     height: 40px;
     flex-basis: 40px;
-    padding: 6px;
-    border-radius: 13px;
   }
-  .brand-sub{
-    display: none; /* garde le menu clean sur mobile */
-  }
+  .brand-sub{ display: none; }
 }
 
-/* ==================== Footer brand ==================== */
+/* ==================== Footer brand (KEEP as-is) ==================== */
 .footer-brand{
   display: inline-flex;
   align-items: center;
@@ -326,47 +470,11 @@ p{ margin: 0 0 14px 0; }
   object-fit: contain;
 }
 
-.footer-brand-text{
-  min-width: 0;
-}
+.footer-brand-text{ min-width: 0; }
 
-/* Option: hover subtle premium */
-.brand:hover .brand-logo,
 .footer-brand:hover .footer-logo{
   border-color: rgba(255,79,216,.26);
   box-shadow: 0 0 0 4px rgba(255,79,216,.10), var(--shadow-glow);
-}
-
-/* Mobile */
-.menu-toggle{
-  display: none;
-  border: 1px solid rgba(255,255,255,.14);
-  background: rgba(255,255,255,.04);
-  border-radius: 14px;
-  padding: 10px 12px;
-  box-shadow: var(--shadow-glow);
-}
-
-@media (max-width: 860px){
-  .menu-toggle{ display: inline-flex; gap:10px; align-items:center; }
-  .nav-links{
-    display: none;
-  }
-  body[data-menu="open"] .nav-links{
-    display: flex;
-    position: absolute;
-    left: var(--gutter);
-    right: var(--gutter);
-    top: 62px;
-    padding: 14px;
-    border-radius: var(--r-xl);
-    border: 1px solid rgba(255,255,255,.14);
-    background: rgba(15,15,25,.82);
-    backdrop-filter: blur(var(--blur));
-    -webkit-backdrop-filter: blur(var(--blur));
-    box-shadow: var(--shadow-card);
-    justify-content: flex-start;
-  }
 }
 
 /* -------------------- Hero -------------------- */
