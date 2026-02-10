@@ -1413,3 +1413,98 @@ select:focus{
   transform: translateY(-.5px);
 }
 
+/* =========================================================
+   TOC / "On this page" — horizontal premium tabs
+   Works with your existing: <div id="toc"></div>
+   ========================================================= */
+
+/* The TOC container that JS fills */
+#toc{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  /* horizontal menu */
+  overflow-x: auto;
+  overflow-y: hidden;
+  white-space: nowrap;
+
+  padding: 10px 8px;
+  margin-top: 12px;
+
+  border-radius: var(--r-2xl);
+  border: 1px solid rgba(255,255,255,.12);
+  background: rgba(255,255,255,.03);
+  box-shadow: var(--shadow-soft);
+
+  -webkit-overflow-scrolling: touch;
+  scroll-snap-type: x mandatory;
+}
+
+/* Hide scrollbar (still scrollable) */
+#toc{
+  scrollbar-width: none;           /* Firefox */
+}
+#toc::-webkit-scrollbar{
+  width: 0;
+  height: 0;
+}
+
+/* Each link becomes a "tab" */
+#toc a{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  padding: 10px 12px;
+  min-height: 40px;
+
+  border-radius: 14px;            /* not round */
+  border: 1px solid rgba(255,255,255,.14);
+  background: rgba(255,255,255,.04);
+
+  color: rgba(255,255,255,.88);
+  font-weight: 850;
+  font-size: 13px;
+  letter-spacing: .01em;
+
+  box-shadow: 0 10px 26px rgba(0,0,0,.30);
+  transition: transform var(--dur) var(--ease),
+              border-color var(--dur) var(--ease),
+              background var(--dur) var(--ease),
+              box-shadow var(--dur) var(--ease);
+
+  scroll-snap-align: start;
+}
+
+/* Hover */
+#toc a:hover{
+  transform: translateY(-1px);
+  border-color: rgba(255,79,216,.28);
+  background: linear-gradient(135deg, rgba(255,79,216,.10), rgba(217,180,108,.08));
+  box-shadow: 0 0 0 4px rgba(255,79,216,.10), 0 14px 34px rgba(0,0,0,.38);
+  color: var(--pearl);
+}
+
+/* Active state (we'll support aria-current if your JS adds it) */
+#toc a[aria-current="true"],
+#toc a.is-active{
+  border-color: rgba(255,79,216,.40);
+  background: linear-gradient(135deg, rgba(255,79,216,.18), rgba(217,180,108,.12));
+  color: var(--pearl);
+  box-shadow: 0 0 0 4px rgba(255,79,216,.12), var(--shadow-glow);
+}
+
+/* Optional: a subtle fade at edges (premium hint that it scrolls) */
+#toc{
+  -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 18px, #000 calc(100% - 18px), transparent 100%);
+          mask-image: linear-gradient(90deg, transparent 0, #000 18px, #000 calc(100% - 18px), transparent 100%);
+}
+
+/* On desktop, center it a bit more */
+@media (min-width: 900px){
+  #toc{
+    justify-content: flex-start;
+  }
+}
