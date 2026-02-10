@@ -580,10 +580,12 @@ p{ margin: 0 0 14px 0; }
 }
 
 /* Mobile dropdown */
+/* ================= Mobile Nav (updated) ================= */
 @media (max-width: 860px){
   .brand{ max-width: 78%; }
   .menu-toggle{ display: inline-flex; }
 
+  /* Main mobile menu panel */
   .nav-links{
     display: none;
     position: absolute;
@@ -594,7 +596,7 @@ p{ margin: 0 0 14px 0; }
     padding: 14px;
     border-radius: var(--r-xl);
     border: 1px solid rgba(255,255,255,.14);
-    background: rgba(15,15,25,.90);
+    background: rgba(15,15,25,.92);
 
     backdrop-filter: blur(var(--blur));
     -webkit-backdrop-filter: blur(var(--blur));
@@ -610,13 +612,42 @@ p{ margin: 0 0 14px 0; }
     -webkit-overflow-scrolling: touch;
   }
 
+  /* Open when body menu is open */
   body[data-menu="open"] .nav-links{ display: flex; }
 
+  /* All links in mobile menu */
   .nav-links a{
     text-align: center;
     padding: 12px 14px;
   }
+
+  /* ===== Dropdown support inside mobile menu ===== */
+  .nav-dd{
+    display: block;
+    width: 100%;
+  }
+
+  .nav-dd__trigger{
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* dropdown closed by default on mobile */
+  .nav-dd__menu{
+    position: static;
+    display: none;
+    margin-top: 10px;
+    min-width: 0;
+    padding: 10px;
+  }
+
+  /* show dropdown items only when the main menu is open
+     (and only if you want it visible in mobile) */
+  body[data-menu="open"] .nav-dd__menu{
+    display: block;
+  }
 }
+
 @media (max-width: 560px){
   .brand-logo{
     width: 40px;
