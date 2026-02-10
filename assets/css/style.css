@@ -1419,108 +1419,133 @@ select:focus{
   font-size: 13px;
 }
 
-
 /* =========================================================
-   "On this page" TOC — top-nav style (like your screenshot)
-   Applies to: <div id="toc"></div>
+   TOC NAV BAR — FORCE HORIZONTAL + BARBIE LUXE
+   Put at the VERY END of style.css
    ========================================================= */
 
+/* Container bar */
 #toc{
-  /* bar */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 22px;
-
+  display:flex;
+  align-items:center;
+  gap: 18px;
   padding: 12px 14px;
   margin-top: 14px;
 
   border-radius: 18px;
-  border: 1px solid rgba(255,255,255,.12);
+  border: 1px solid rgba(255,255,255,.14);
 
+  /* Barbie glass */
   background:
-    linear-gradient(180deg, rgba(28,44,68,.92) 0%, rgba(18,26,40,.86) 100%);
+    radial-gradient(900px 240px at 12% 0%, rgba(255,79,216,.22), transparent 60%),
+    radial-gradient(800px 240px at 92% 10%, rgba(217,180,108,.16), transparent 60%),
+    linear-gradient(180deg, rgba(18,18,28,.74) 0%, rgba(11,11,18,.62) 100%);
 
-  box-shadow: 0 16px 46px rgba(0,0,0,.40);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  box-shadow:
+    0 22px 70px rgba(0,0,0,.45),
+    0 0 0 1px rgba(255,255,255,.06);
 
-  /* allow horizontal scroll on small screens */
-  overflow-x: auto;
-  overflow-y: hidden;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+
+  /* horizontal scroll on small screens */
+  overflow-x:auto;
+  overflow-y:hidden;
   white-space: nowrap;
   -webkit-overflow-scrolling: touch;
-
   scrollbar-width: none;
 }
-#toc::-webkit-scrollbar{ height: 0; }
+#toc::-webkit-scrollbar{ height:0; }
 
-/* menu items */
+/* IMPORTANT: if JS injected a wrapper (.toc / ul / ol / nav), force it to be horizontal too */
+#toc > *{
+  display:flex !important;
+  align-items:center;
+  gap: 18px;
+  flex-wrap: nowrap;
+  white-space: nowrap;
+}
+#toc ul, #toc ol, #toc nav, #toc .toc{
+  display:flex !important;
+  align-items:center;
+  gap: 18px;
+  flex-wrap: nowrap;
+  white-space: nowrap;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Links */
 #toc a{
   position: relative;
-  display: inline-flex;
-  align-items: center;
+  display:inline-flex !important;
+  align-items:center;
   gap: 8px;
 
-  padding: 10px 6px;          /* flat / menu vibe */
-  border-radius: 10px;        /* not pill */
+  padding: 10px 10px;
+  border-radius: 12px; /* menu vibe (pas pill) */
   border: 1px solid transparent;
 
   color: rgba(255,255,255,.92);
-  font-weight: 800;
+  font-weight: 900;
   font-size: 14px;
   letter-spacing: .01em;
 
-  text-decoration: none;
-  transition: color var(--dur) var(--ease),
+  white-space: nowrap;
+  text-decoration:none;
+
+  transition: transform var(--dur) var(--ease),
               background var(--dur) var(--ease),
               border-color var(--dur) var(--ease),
-              transform var(--dur) var(--ease);
+              box-shadow var(--dur) var(--ease),
+              color var(--dur) var(--ease);
 }
 
-/* little caret like a nav dropdown */
-#toc a::after{
-  content: "▾";
-  font-size: 12px;
-  opacity: .85;
-  transform: translateY(1px);
-}
-
-/* hover */
-#toc a:hover{
-  color: var(--pearl);
-  background: rgba(255,255,255,.06);
-  border-color: rgba(255,255,255,.10);
-  transform: translateY(-1px);
-}
-
-/* active (works if your JS adds aria-current or .is-active) */
-#toc a[aria-current="true"],
-#toc a.is-active{
-  color: var(--pearl);
-  background: rgba(255,79,216,.10);
-  border-color: rgba(255,79,216,.22);
-  box-shadow: 0 0 0 4px rgba(255,79,216,.10);
-}
-
-/* optional: subtle separators between items */
+/* Subtle separator like your screenshot */
 #toc a + a{
   margin-left: 2px;
 }
 #toc a + a::before{
   content:"";
   position:absolute;
-  left: -12px;
+  left: -10px;
   top: 50%;
   width: 1px;
   height: 18px;
-  background: rgba(255,255,255,.14);
   transform: translateY(-50%);
-  opacity: .7;
+  background: rgba(255,255,255,.16);
+  opacity: .75;
 }
 
-/* on small screens, align left so it feels like a scroller menu */
+/* Hover */
+#toc a:hover{
+  color: var(--pearl);
+  background: rgba(255,255,255,.06);
+  border-color: rgba(255,79,216,.20);
+  box-shadow: 0 0 0 4px rgba(255,79,216,.10);
+  transform: translateY(-1px);
+}
+
+/* Active (if JS sets aria-current or .is-active) */
+#toc a[aria-current="true"],
+#toc a.is-active{
+  background:
+    linear-gradient(135deg, rgba(255,79,216,.18), rgba(217,180,108,.14));
+  border-color: rgba(255,79,216,.28);
+  box-shadow: 0 0 0 4px rgba(255,79,216,.12);
+  color: var(--pearl);
+}
+
+/* Optional: small down-caret like a nav item */
+#toc a::after{
+  content:"▾";
+  font-size: 12px;
+  opacity: .8;
+  transform: translateY(1px);
+}
+
+/* Mobile: start aligned, feels like a scroller menu */
 @media (max-width: 820px){
-  #toc{ justify-content: flex-start; gap: 18px; }
-  #toc a + a::before{ left: -10px; }
+  #toc{ justify-content:flex-start; }
 }
