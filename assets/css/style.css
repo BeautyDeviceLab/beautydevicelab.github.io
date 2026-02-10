@@ -1582,8 +1582,8 @@ select:focus{
 }
 
 /* =========================================================
-   NAV DROPDOWN (hover desktop + friendly mobile)
-   Colle ce bloc TOUT EN BAS de style.css
+   NAV DROPDOWN — PERFECT (desktop hover + mobile tap)
+   Replace your NAV DROPDOWN block with this
    ========================================================= */
 
 .nav-dd{
@@ -1592,9 +1592,8 @@ select:focus{
   align-items: center;
 }
 
-/* Le trigger ressemble à tes .nav-links a */
+/* Trigger */
 .nav-dd__trigger{
-  /* reprend le look de .nav-links a */
   padding: 8px 12px;
   border-radius: 999px;
   border: 1px solid rgba(255,255,255,.12);
@@ -1627,7 +1626,7 @@ select:focus{
   color: var(--pearl);
 }
 
-/* Le menu déroulant */
+/* Menu panel (desktop) */
 .nav-dd__menu{
   position: absolute;
   top: calc(100% + 10px);
@@ -1646,6 +1645,13 @@ select:focus{
 
   display: none;
   z-index: 1000;
+
+  /* smoother feel */
+  transform: translateY(-4px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--dur) var(--ease),
+              transform var(--dur) var(--ease);
 }
 
 .nav-dd__menu a{
@@ -1665,14 +1671,18 @@ select:focus{
   color: var(--pearl);
 }
 
-/* Desktop: ouverture au survol */
+/* Desktop: open on hover + keyboard focus */
 @media (hover: hover) and (pointer: fine){
-  .nav-dd:hover .nav-dd__menu{
+  .nav-dd:hover .nav-dd__menu,
+  .nav-dd:focus-within .nav-dd__menu{
     display: block;
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
   }
 }
 
-/* Mobile: le menu devient une liste visible quand le menu mobile est ouvert */
+/* Mobile: becomes an accordion INSIDE the mobile menu */
 @media (max-width: 860px){
   .nav-dd{
     display: block;
@@ -1684,11 +1694,24 @@ select:focus{
     justify-content: center;
   }
 
+  /* IMPORTANT: closed by default on mobile */
   .nav-dd__menu{
     position: static;
-    display: block;
     margin-top: 10px;
     min-width: 0;
+
+    display: none;        /* ✅ closed */
+    opacity: 1;           /* no fade needed */
+    transform: none;
+    pointer-events: auto;
+
+    padding: 10px;
+  }
+
+  /* Open only when YOU add .is-open (via JS) */
+  .nav-dd.is-open .nav-dd__menu{
+    display: block;
   }
 }
+
 
