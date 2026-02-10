@@ -1413,6 +1413,13 @@ select:focus{
   transform: translateY(-.5px);
 }
 
+.btn--tiny{
+  padding: 9px 12px;
+  min-height: 38px;
+  font-size: 13px;
+}
+
+
 /* =========================================================
    "On this page" TOC — top-nav style (like your screenshot)
    Applies to: <div id="toc"></div>
