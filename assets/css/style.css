@@ -1528,3 +1528,207 @@ select:focus{
   color: rgba(255,255,255,.84);
 }
 .procon .box li{ margin: 6px 0; }
+
+/* =========================================================
+   BeautyDeviceLab — HTML PATCH PACK (missing classes)
+   Paste at VERY END of style.css
+   Fixes: card-pad, grid-2, feature, aff-note, sticky-cta,
+          footer-brand/logo/text, smallprint, sparkle helper
+   ========================================================= */
+
+/* ---------- Card padding helper (used in TOC + internal links) ---------- */
+.card-pad{
+  padding: clamp(16px, 2.2vw, 22px);
+}
+
+/* ---------- Grid alias used in HTML ---------- */
+.grid-2{
+  display: grid;
+  gap: 18px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+@media (max-width: 760px){
+  .grid-2{ grid-template-columns: 1fr; }
+}
+
+/* ---------- Feature tiles (How to choose + FAQ) ---------- */
+.feature{
+  border-radius: var(--r-2xl);
+  border: 1px solid rgba(255,255,255,.12);
+  background: rgba(255,255,255,.04);
+  box-shadow: var(--shadow-soft);
+  padding: clamp(14px, 2vw, 18px);
+  position: relative;
+  overflow: hidden;
+}
+.feature::before{
+  content:"";
+  position:absolute;
+  inset:-2px;
+  background:
+    radial-gradient(700px 220px at 12% 0%, rgba(255,79,216,.10), transparent 60%),
+    radial-gradient(700px 220px at 92% 10%, rgba(217,180,108,.08), transparent 60%);
+  pointer-events:none;
+}
+.feature > *{ position: relative; }
+.feature h3{
+  margin-bottom: 8px;
+}
+.feature p{
+  margin-bottom: 0;
+}
+
+/* ---------- Affiliate micro note (under hero / product cards) ---------- */
+.aff-note,
+.smallprint{
+  color: rgba(255,255,255,.68);
+  font-size: 13px;
+  line-height: 1.45;
+  margin: 12px 0 0 0;
+}
+:root[data-theme="light"] .aff-note,
+:root[data-theme="light"] .smallprint{
+  color: rgba(10,10,16,.62);
+}
+
+/* ---------- Sparkle helper (if you keep class="sparkle") ---------- */
+.sparkle{
+  position: relative;
+}
+.sparkle::before{
+  content:"";
+  position:absolute;
+  inset:-2px;
+  background:
+    radial-gradient(900px 260px at 15% 0%, rgba(255,79,216,.10), transparent 60%),
+    radial-gradient(900px 260px at 90% 10%, rgba(217,180,108,.08), transparent 60%);
+  pointer-events:none;
+  z-index: 1;
+}
+.sparkle > *{ position: relative; z-index: 2; }
+
+/* ---------- Sticky CTA (bottom floating bar) ---------- */
+.sticky-cta{
+  position: sticky;
+  bottom: 14px;
+  z-index: 50;
+  margin: 28px 0 10px 0;
+}
+.sticky-cta .inner{
+  display:flex;
+  align-items:center;
+  justify-content: space-between;
+  gap: 12px;
+
+  padding: 12px 14px;
+  border-radius: var(--r-2xl);
+  border: 1px solid rgba(255,255,255,.14);
+
+  background:
+    radial-gradient(900px 240px at 16% 0%, rgba(255,79,216,.16), transparent 60%),
+    radial-gradient(900px 240px at 90% 10%, rgba(217,180,108,.12), transparent 60%),
+    rgba(15,15,25,.78);
+
+  backdrop-filter: blur(var(--blur));
+  -webkit-backdrop-filter: blur(var(--blur));
+
+  box-shadow:
+    0 26px 90px rgba(0,0,0,.55),
+    0 0 0 1px rgba(255,255,255,.06);
+}
+.sticky-cta strong{
+  color: var(--pearl);
+}
+@media (max-width: 780px){
+  .sticky-cta .inner{
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .sticky-cta .cluster{
+    justify-content: stretch;
+  }
+  .sticky-cta .cluster .btn{
+    width: 100%;
+  }
+}
+
+/* ---------- Footer layout (your HTML uses .footer-grid + .footer-brand) ---------- */
+.footer-grid{
+  display:grid;
+  grid-template-columns: 1.25fr .75fr;
+  gap: 18px;
+  padding: 26px 0;
+  align-items: start;
+}
+@media (max-width: 860px){
+  .footer-grid{ grid-template-columns: 1fr; }
+}
+
+/* Footer brand block */
+.footer-brand{
+  display:flex;
+  gap: 14px;
+  align-items: flex-start;
+  text-decoration: none;
+  min-width: 0;
+}
+.footer-logo{
+  width: 56px;
+  height: 56px;
+  flex: 0 0 56px;
+
+  border-radius: 16px;
+  padding: 6px;
+
+  background: linear-gradient(135deg, rgba(255,79,216,.16), rgba(217,180,108,.10));
+  border: 1px solid rgba(255,255,255,.14);
+  box-shadow: var(--shadow-glow);
+
+  object-fit: contain;
+  object-position: center;
+}
+.footer-brand-text{
+  display:block;
+  min-width: 0;
+}
+.footer .brand-name{
+  display:block;
+}
+
+/* Make footer links match header vibe even more */
+.footer-links a{
+  transition: transform var(--dur) var(--ease),
+              box-shadow var(--dur) var(--ease),
+              border-color var(--dur) var(--ease),
+              background var(--dur) var(--ease);
+}
+.footer-links a:hover{
+  transform: translateY(-1px);
+  box-shadow: 0 0 0 4px rgba(255,79,216,.10);
+}
+
+/* ---------- Table scroll polish (if not already) ---------- */
+.table-scroll{
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.table-scroll::-webkit-scrollbar{ height: 10px; }
+.table-scroll::-webkit-scrollbar-thumb{
+  background: rgba(255,255,255,.14);
+  border-radius: 999px;
+}
+.table-scroll::-webkit-scrollbar-track{
+  background: rgba(255,255,255,.04);
+}
+
+/* ---------- Light mode tuning for feature tiles + footer ---------- */
+:root[data-theme="light"] .feature,
+:root[data-theme="light"] .table-wrap,
+:root[data-theme="light"] .sticky-cta .inner,
+:root[data-theme="light"] .footer{
+  border-color: rgba(10,10,16,.10);
+}
+:root[data-theme="light"] .footer-links a{
+  color: rgba(10,10,16,.76);
+}
+
