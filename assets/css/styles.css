@@ -1869,3 +1869,11 @@ select:focus{
   display: block;
 }
 
+/* Prevent sticky CTA from covering bottom content */
+main#main-content{
+  padding-bottom: 90px;
+}
+
+.feature figure img{
+  filter: saturate(1.03) contrast(1.04);
+}
