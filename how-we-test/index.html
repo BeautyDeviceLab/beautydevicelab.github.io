@@ -24,26 +24,82 @@
     gtag('js', new Date());
     gtag('config', 'G-D8FS1QBWQE');
   </script>
-  
+
+  <!-- Favicons / App icons (ROOT files) -->
+  <link rel="icon" href="/favicon.ico" sizes="any" />
+  <link rel="icon" type="image/png" href="/favicon-32x32.png" sizes="32x32" />
+  <link rel="icon" type="image/png" href="/favicon-16x16.png" sizes="16x16" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180" />
+  <link rel="manifest" href="/site.webmanifest" />
+  <meta name="application-name" content="BeautyDeviceLab" />
+  <meta name="apple-mobile-web-app-title" content="BeautyDeviceLab" />
+
   <!-- Open Graph -->
+  <meta property="og:site_name" content="BeautyDeviceLab" />
   <meta property="og:title" content="How We Test | BeautyDeviceLab" />
   <meta property="og:description" content="Our routine-first testing methodology for IPL, LED masks, and microcurrent devices." />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://beautydevicelab.github.io/how-we-test/" />
-  <meta property="og:image" content="https://beautydevicelab.github.io/assets/og/how-we-test-1200x630.webp" />
   <meta property="og:locale" content="en_CA" />
+
+  <!-- OG Image (WebP + dimensions + alt) -->
+  <meta property="og:image" content="https://beautydevicelab.github.io/assets/images/og/how-we-test-1200x630.webp" />
+  <meta property="og:image:secure_url" content="https://beautydevicelab.github.io/assets/images/og/how-we-test-1200x630.webp" />
+  <meta property="og:image:type" content="image/webp" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="How BeautyDeviceLab tests at-home beauty devices" />
 
   <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="How We Test | BeautyDeviceLab" />
   <meta name="twitter:description" content="Our routine-first methodology for evaluating at-home beauty devices." />
-  <meta name="twitter:image" content="https://beautydevicelab.github.io/assets/og/how-we-test-1200x630.webp" />
+  <meta name="twitter:image" content="https://beautydevicelab.github.io/assets/images/og/how-we-test-1200x630.webp" />
+  <meta name="twitter:image:alt" content="How BeautyDeviceLab tests at-home beauty devices" />
 
   <!-- Styles -->
   <link rel="preload" href="/assets/css/styles.css" as="style" />
   <link rel="stylesheet" href="/assets/css/styles.css" />
 
-  <!-- JSON-LD -->
+  <!-- JSON-LD: Organization -->
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"Organization",
+    "name":"BeautyDeviceLab",
+    "url":"https://beautydevicelab.github.io/",
+    "logo":{
+      "@type":"ImageObject",
+      "url":"https://beautydevicelab.github.io/assets/images/logo-beautydevicelab-1024.png"
+    }
+  }
+  </script>
+
+  <!-- JSON-LD: WebSite -->
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"WebSite",
+    "name":"BeautyDeviceLab",
+    "url":"https://beautydevicelab.github.io/",
+    "inLanguage":"en-CA",
+    "publisher":{
+      "@type":"Organization",
+      "name":"BeautyDeviceLab",
+      "logo":{
+        "@type":"ImageObject",
+        "url":"https://beautydevicelab.github.io/assets/images/logo-beautydevicelab-1024.png"
+      }
+    },
+    "potentialAction":{
+      "@type":"SearchAction",
+      "target":"https://beautydevicelab.github.io/search/?q={search_term_string}",
+      "query-input":"required name=search_term_string"
+    }
+  }
+  </script>
+
+  <!-- JSON-LD: WebPage -->
   <script type="application/ld+json">
   {
     "@context":"https://schema.org",
@@ -61,27 +117,70 @@
 </head>
 
 <body>
-  <!-- HEADER -->
+  <!-- HEADER (match your top menu style) -->
   <header class="site-header" role="banner">
     <div class="container">
       <div class="nav" aria-label="Primary navigation">
+
+        <!-- BRAND -->
         <a class="brand" href="/" aria-label="BeautyDeviceLab home">
-          <span class="brand-badge" aria-hidden="true"></span>
-          <span style="min-width:0">
-            <div class="brand-name">BeautyDeviceLab</div>
-            <div class="brand-sub">At-home beauty tech reviews</div>
+          <img
+            class="brand-logo"
+            src="/assets/images/logo-beautydevicelab-1024.png"
+            alt="BeautyDeviceLab"
+            width="96" height="96"
+            loading="eager"
+            decoding="async"
+            fetchpriority="high"
+          />
+          <span class="brand-text">
+            <span class="brand-name">BeautyDeviceLab</span>
+            <span class="brand-sub">At-home beauty tech reviews</span>
           </span>
         </a>
 
-        <button id="menuToggle" class="menu-toggle" aria-expanded="false" aria-controls="siteNavLinks">Menu</button>
+        <button id="menuToggle" class="menu-toggle" aria-expanded="false" aria-controls="siteNavLinks">
+          Menu
+        </button>
 
         <nav id="siteNavLinks" class="nav-links" aria-label="Site links">
-          <a href="/best-ipl-hair-removal-devices-canada/">IPL</a>
-          <a href="/best-led-face-masks/">LED</a>
-          <a href="/best-microcurrent-facial-devices/">Microcurrent</a>
+          <!-- IPL dropdown -->
+          <div class="nav-dd">
+            <a class="nav-dd__trigger" href="/best-ipl-hair-removal-devices-canada/" aria-haspopup="true" aria-expanded="false">
+              IPL
+            </a>
+            <div class="nav-dd__menu" aria-label="IPL pages">
+              <a href="/best-ipl-hair-removal-devices-canada/">Best IPL (Canada)</a>
+              <a href="/reviews/braun-silk-expert-pro-ipl-review/">Braun review</a>
+              <a href="/reviews/ulike-ipl-review/">Ulike review</a>
+            </div>
+          </div>
+
+          <!-- LED dropdown -->
+          <div class="nav-dd">
+            <a class="nav-dd__trigger" href="/best-led-face-masks/" aria-haspopup="true" aria-expanded="false">
+              LED
+            </a>
+            <div class="nav-dd__menu" aria-label="LED pages">
+              <a href="/best-led-face-masks/">Best LED face masks</a>
+            </div>
+          </div>
+
+          <!-- Microcurrent dropdown -->
+          <div class="nav-dd">
+            <a class="nav-dd__trigger" href="/best-microcurrent-facial-devices/" aria-haspopup="true" aria-expanded="false">
+              Microcurrent
+            </a>
+            <div class="nav-dd__menu" aria-label="Microcurrent pages">
+              <a href="/best-microcurrent-facial-devices/">Best microcurrent devices</a>
+            </div>
+          </div>
+
+          <!-- Standard links -->
           <a href="/how-we-test/" aria-current="page">How we test</a>
           <a href="/disclosure/">Disclosure</a>
         </nav>
+
       </div>
     </div>
   </header>
@@ -104,6 +203,15 @@
               <div class="notice notice--tip mt-4">
                 <strong>Short version:</strong> We prioritize devices that feel easy to repeat, with clear trade-offs and Canada-friendly buying notes.
               </div>
+
+              <div class="cta-row mt-4">
+                <a class="btn btn--primary w-100" href="#framework">The 7 factors</a>
+                <a class="btn btn--ghost w-100" href="#scoring">Scoring</a>
+              </div>
+
+              <p class="aff-note">
+                Disclosure: As an Amazon Associate, we may earn from qualifying purchases.
+              </p>
             </div>
           </div>
 
@@ -163,7 +271,7 @@
     <section class="section" id="framework" aria-label="Framework">
       <h2>Our routine-first framework (the 7 factors)</h2>
 
-      <div class="grid-2 mt-4">
+      <div class="grid grid--2 mt-4 grid-2">
         <div class="feature">
           <h3>1) Comfort & tolerance</h3>
           <p class="muted">If sessions feel harsh, most people quit. We value devices that reduce friction and discomfort.</p>
@@ -199,7 +307,7 @@
     <section class="section" id="category-notes" aria-label="Category notes">
       <h2>Category notes (IPL vs LED vs microcurrent)</h2>
 
-      <div class="grid-2 mt-4">
+      <div class="grid grid--2 mt-4 grid-2">
         <div class="feature">
           <h3>IPL</h3>
           <p class="muted">
@@ -240,42 +348,44 @@
       </p>
 
       <div class="table-wrap mt-4" role="region" aria-label="Scoring table">
-        <table>
-          <thead>
-            <tr>
-              <th>Factor</th>
-              <th>What it means</th>
-              <th>Why it matters</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><strong>Comfort</strong></td>
-              <td>How tolerable sessions feel</td>
-              <td>Discomfort kills consistency</td>
-            </tr>
-            <tr>
-              <td><strong>Workflow</strong></td>
-              <td>Time + ease + setup</td>
-              <td>Fast routines get repeated</td>
-            </tr>
-            <tr>
-              <td><strong>Trust</strong></td>
-              <td>Build, instructions, safety</td>
-              <td>Reduces regret and misuse</td>
-            </tr>
-            <tr>
-              <td><strong>Value</strong></td>
-              <td>Price relative to routine fit</td>
-              <td>Best choice depends on your habits</td>
-            </tr>
-            <tr>
-              <td><strong>Canada reality</strong></td>
-              <td>Seller, returns, warranty</td>
-              <td>A “great device” can still be a bad purchase</td>
-            </tr>
-          </tbody>
-        </table>
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>Factor</th>
+                <th>What it means</th>
+                <th>Why it matters</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Comfort</strong></td>
+                <td>How tolerable sessions feel</td>
+                <td>Discomfort kills consistency</td>
+              </tr>
+              <tr>
+                <td><strong>Workflow</strong></td>
+                <td>Time + ease + setup</td>
+                <td>Fast routines get repeated</td>
+              </tr>
+              <tr>
+                <td><strong>Trust</strong></td>
+                <td>Build, instructions, safety</td>
+                <td>Reduces regret and misuse</td>
+              </tr>
+              <tr>
+                <td><strong>Value</strong></td>
+                <td>Price relative to routine fit</td>
+                <td>Best choice depends on your habits</td>
+              </tr>
+              <tr>
+                <td><strong>Canada reality</strong></td>
+                <td>Seller, returns, warranty</td>
+                <td>A “great device” can still be a bad purchase</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
         <div class="table-note">
           We keep the framework simple on purpose: clarity beats fake precision.
         </div>
@@ -312,17 +422,30 @@
 
   </main>
 
-  <!-- FOOTER -->
+  <!-- FOOTER (match your site footer style) -->
   <footer class="footer" role="contentinfo">
     <div class="container">
       <div class="footer-grid">
         <div>
-          <div class="brand-name">BeautyDeviceLab</div>
-          <p class="muted mt-2 max-65ch">
-            Expert-led reviews and buying guides for at-home beauty technology.
-            We focus on clarity, comfort, and real-world routines.
-          </p>
-          <p class="smallprint">
+          <a class="footer-brand" href="/" aria-label="BeautyDeviceLab home">
+            <img
+              class="footer-logo"
+              src="/assets/images/logo-beautydevicelab-1024.png"
+              alt="BeautyDeviceLab"
+              width="96" height="96"
+              loading="lazy"
+              decoding="async"
+            />
+            <span class="footer-brand-text">
+              <span class="brand-name">BeautyDeviceLab</span>
+              <span class="muted" style="display:block;margin-top:6px;">
+                Expert-led reviews and buying guides for at-home beauty technology.
+                We focus on clarity, comfort, and real-world routines.
+              </span>
+            </span>
+          </a>
+
+          <p class="smallprint" style="margin-top:12px;">
             <strong>Affiliate disclosure:</strong> We may earn commissions from qualifying purchases via Amazon links.
             This helps support the site at no extra cost to you.
           </p>
@@ -331,12 +454,14 @@
         <div>
           <div class="footer-links" aria-label="Footer links">
             <a href="/about/">About</a>
-            <a href="/how-we-test/" aria-current="page">How we test</a>
+            <a href="/contact/">Contact</a>
+            <a href="/how-we-test/" aria-current="page">Method</a>
             <a href="/disclosure/">Disclosure</a>
             <a href="/privacy-policy/">Privacy policy</a>
-            <a href="/">Home</a>
           </div>
-          <p class="smallprint">© <span id="year"></span> BeautyDeviceLab. All rights reserved.</p>
+          <p class="smallprint">
+            © <span id="year"></span> BeautyDeviceLab. All rights reserved.
+          </p>
         </div>
       </div>
     </div>
