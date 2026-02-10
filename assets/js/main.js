@@ -1,6 +1,8 @@
 /* =========================================================
-   BeautyDeviceLab — main.js (ULTRA LUXE “BARBIE” v2)
+   BeautyDeviceLab — main.js (ULTRA LUXE “BARBIE” v2.1)
    - Mobile menu toggle (body data-menu="open") + scroll lock no-jump
+   - Desktop dropdowns: click-to-open + outside click close + Escape
+   - Mobile dropdowns: tap-to-toggle inside menu (no accidental close)
    - Smooth anchor scroll (offset auto selon header sticky)
    - Active section highlight (optional)
    - Table responsive labels helper (optional)
@@ -35,6 +37,8 @@
     defaultTheme: "dark",
 
     tocMinHeadings: 3,
+
+    navMobileMax: 860, // must match your CSS breakpoint
   };
 
   /* -------------------- Helpers -------------------- */
@@ -55,6 +59,9 @@
       });
     };
   };
+
+  const isMobileNav = () =>
+    window.matchMedia(`(max-width: ${CFG.navMobileMax}px)`).matches;
 
   const getHeaderOffset = () => {
     const header = $(CFG.headerSelector);
@@ -129,11 +136,14 @@
       isMenuOpen() ? closeMenu() : openMenu();
     });
 
-    // Close on nav link click (mobile)
+    // Close on nav link click (mobile) — BUT do NOT close if clicking dropdown trigger
     nav.addEventListener("click", (e) => {
+      const trigger = e.target.closest(".nav-dd__trigger");
+      if (trigger) return;
+
       const a = e.target.closest("a");
       if (!a) return;
-      if (window.matchMedia("(max-width: 860px)").matches) closeMenu();
+      if (isMobileNav()) closeMenu();
     });
 
     // Close on Escape
@@ -151,8 +161,59 @@
 
     // Close on resize up
     window.addEventListener("resize", () => {
-      if (!window.matchMedia("(max-width: 860px)").matches) closeMenu();
+      if (!isMobileNav()) closeMenu();
     });
+  }
+
+  /* -------------------- 1.5) Nav Dropdowns (Desktop click + Mobile toggle) -------------------- */
+  function initNavDropdowns() {
+    const dropdowns = $$(".nav-dd");
+    if (!dropdowns.length) return;
+
+    const closeAll = (except = null) => {
+      dropdowns.forEach((dd) => {
+        if (except && dd === except) return;
+        dd.classList.remove("is-open");
+        const trigger = $(".nav-dd__trigger", dd);
+        if (trigger) trigger.setAttribute("aria-expanded", "false");
+      });
+    };
+
+    dropdowns.forEach((dd) => {
+      const trigger = $(".nav-dd__trigger", dd);
+      const menu = $(".nav-dd__menu", dd);
+      if (!trigger || !menu) return;
+
+      trigger.setAttribute("aria-expanded", "false");
+
+      trigger.addEventListener("click", (e) => {
+        // Desktop: click opens menu (prevents accidental close)
+        // Mobile: click toggles accordion inside the opened mobile menu
+        e.preventDefault();
+        e.stopPropagation();
+
+        const willOpen = !dd.classList.contains("is-open");
+        closeAll(dd);
+        dd.classList.toggle("is-open", willOpen);
+        trigger.setAttribute("aria-expanded", willOpen ? "true" : "false");
+      });
+
+      // Keep clicks inside menu safe
+      menu.addEventListener("click", (e) => {
+        e.stopPropagation();
+      });
+    });
+
+    // Outside click closes (desktop + mobile)
+    document.addEventListener("click", () => closeAll());
+
+    // Escape closes
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") closeAll();
+    });
+
+    // Resize closes to avoid weird states
+    window.addEventListener("resize", () => closeAll());
   }
 
   /* -------------------- 2) Smooth Anchor Scroll -------------------- */
@@ -171,7 +232,7 @@
       if (!target) return;
 
       // If menu open on mobile, close first
-      if (isMenuOpen() && window.matchMedia("(max-width: 860px)").matches) {
+      if (isMenuOpen() && isMobileNav()) {
         setBodyMenu(false);
         const btn = $("#menuToggle");
         if (btn) btn.setAttribute("aria-expanded", "false");
@@ -452,6 +513,7 @@
   /* -------------------- Init -------------------- */
   function init() {
     initMobileMenu();
+    initNavDropdowns();   // ✅ NEW: fixes the “closes too fast” problem
     initSmoothScroll();
     initActiveSection();
     initTableLabels();
