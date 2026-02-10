@@ -1732,3 +1732,51 @@ select:focus{
   color: rgba(10,10,16,.76);
 }
 
+/* =========================================================
+   NAV DROPDOWN — easier to click (keeps open longer)
+   Paste at VERY END of style.css
+   ========================================================= */
+
+/* 1) Make the hover zone bigger (so it doesn't collapse instantly) */
+.nav-dd{
+  padding-bottom: 10px; /* buffer under trigger */
+}
+
+/* 2) Add an invisible “bridge” between trigger and menu (kills the gap) */
+.nav-dd__menu::before{
+  content:"";
+  position:absolute;
+  left: 0;
+  right: 0;
+  top: -12px;          /* bridge height */
+  height: 12px;
+}
+
+/* 3) Smoother open/close with delay */
+@media (hover: hover) and (pointer: fine){
+  .nav-dd__menu{
+    display: block;           /* keep in flow for transitions */
+    visibility: hidden;
+    opacity: 0;
+    transform: translateY(-4px);
+    pointer-events: none;
+
+    transition:
+      opacity 180ms var(--ease),
+      transform 180ms var(--ease),
+      visibility 0s linear 220ms;  /* delay hiding */
+  }
+
+  .nav-dd:hover .nav-dd__menu,
+  .nav-dd:focus-within .nav-dd__menu{
+    visibility: visible;
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+
+    transition:
+      opacity 180ms var(--ease),
+      transform 180ms var(--ease),
+      visibility 0s;          /* show instantly */
+  }
+}
