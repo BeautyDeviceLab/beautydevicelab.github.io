@@ -1780,3 +1780,69 @@ select:focus{
       visibility 0s;          /* show instantly */
   }
 }
+
+/* =========================================================
+   NAV DROPDOWN — click-to-open + anti “ferme trop vite”
+   (à coller TOUT EN BAS de styles.css)
+   ========================================================= */
+
+/* 1) Assure le bon stacking (menu au-dessus du header) */
+.site-header{ z-index: 999; }
+.nav-dd__menu{ z-index: 1200; }
+
+/* 2) OUVERTURE via JS: .nav-dd.is-open (desktop + mobile) */
+.nav-dd.is-open .nav-dd__menu{
+  display: block;
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+/* 3) “Bridge” invisible entre trigger et menu (plus de gap) */
+.nav-dd{ padding-bottom: 10px; }
+.nav-dd__menu::before{
+  content:"";
+  position:absolute;
+  left: 0;
+  right: 0;
+  top: -12px;
+  height: 12px;
+}
+
+/* 4) Desktop hover: garde une version douce (optionnel mais nice) */
+@media (hover: hover) and (pointer: fine){
+  /* Au lieu de display:none (qui coupe les transitions), on cache propre */
+  .nav-dd__menu{
+    display: block;
+    visibility: hidden;
+    opacity: 0;
+    transform: translateY(-4px);
+    pointer-events: none;
+
+    transition:
+      opacity 180ms var(--ease),
+      transform 180ms var(--ease),
+      visibility 0s linear 220ms; /* delay pour éviter “snap close” */
+  }
+
+  .nav-dd:hover .nav-dd__menu,
+  .nav-dd:focus-within .nav-dd__menu{
+    visibility: visible;
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+    transition:
+      opacity 180ms var(--ease),
+      transform 180ms var(--ease),
+      visibility 0s;
+  }
+}
+
+/* 5) Mobile: menu dropdown en accordéon (déjà dans ton CSS, mais on sécurise) */
+@media (max-width: 860px){
+  .nav-dd__menu{
+    position: static;
+    margin-top: 10px;
+  }
+}
+
