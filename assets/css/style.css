@@ -1334,3 +1334,82 @@ select:focus{
   max-width: 520px;
   margin-inline: auto;
 }
+
+/* =========================================================
+   Comparison table — CTA buttons (NOT round, more premium)
+   Put at the VERY END of style.css
+   ========================================================= */
+
+.table-cta{
+  text-align: right;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+/* Override the global .btn pill shape only inside the table */
+.table-cta .btn{
+  border-radius: 14px !important;   /* ✅ not round */
+  padding: 10px 14px;
+  min-height: 40px;
+  min-width: 132px;
+
+  font-size: 14px;
+  letter-spacing: .01em;
+
+  /* cleaner, more "button" feel */
+  box-shadow:
+    0 14px 34px rgba(0,0,0,.45),
+    inset 0 1px 0 rgba(255,255,255,.26) !important;
+
+  border: 1px solid rgba(255,255,255,.18) !important;
+}
+
+/* Make primary table CTA look like a premium slab */
+.table-cta .btn--primary{
+  background: linear-gradient(135deg,
+    rgba(255,79,216,.98) 0%,
+    rgba(255,46,122,.92) 45%,
+    rgba(217,180,108,.92) 100%
+  ) !important;
+  color: #120915 !important;
+  text-shadow: 0 1px 0 rgba(255,255,255,.18);
+}
+
+/* Secondary: elegant, less flashy */
+.table-cta .btn--secondary{
+  background: linear-gradient(135deg,
+    rgba(255,255,255,.10) 0%,
+    rgba(255,79,216,.14) 45%,
+    rgba(217,180,108,.14) 100%
+  ) !important;
+  color: rgba(255,255,255,.92) !important;
+}
+
+/* Ghost: crisp outline style */
+.table-cta .btn--ghost{
+  background: rgba(255,255,255,.03) !important;
+  border: 1px solid rgba(255,255,255,.16) !important;
+  color: rgba(255,255,255,.88) !important;
+}
+
+/* Hover: premium lift, not balloon */
+.table-cta .btn:hover{
+  transform: translateY(-1px);
+  filter: saturate(1.05) brightness(1.02);
+  box-shadow:
+    0 18px 44px rgba(0,0,0,.50),
+    inset 0 1px 0 rgba(255,255,255,.30) !important;
+}
+
+.table-cta .btn:active{
+  transform: translateY(0) scale(.99);
+}
+
+/* Optional: small arrow vibe without changing HTML */
+.table-cta .btn::after{
+  content: "→";
+  font-weight: 900;
+  opacity: .9;
+  transform: translateY(-.5px);
+}
+
