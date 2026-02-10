@@ -1549,3 +1549,115 @@ select:focus{
 @media (max-width: 820px){
   #toc{ justify-content:flex-start; }
 }
+
+/* =========================================================
+   NAV DROPDOWN (hover desktop + friendly mobile)
+   Colle ce bloc TOUT EN BAS de style.css
+   ========================================================= */
+
+.nav-dd{
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+/* Le trigger ressemble à tes .nav-links a */
+.nav-dd__trigger{
+  /* reprend le look de .nav-links a */
+  padding: 8px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,.12);
+  background: rgba(255,255,255,.03);
+  color: rgba(255,255,255,.82);
+  font-weight: 800;
+  font-size: 13px;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  transition: transform var(--dur) var(--ease),
+              box-shadow var(--dur) var(--ease),
+              border-color var(--dur) var(--ease),
+              background var(--dur) var(--ease),
+              color var(--dur) var(--ease);
+}
+
+.nav-dd__trigger::after{
+  content: "▾";
+  font-size: 12px;
+  opacity: .85;
+  transform: translateY(1px);
+}
+
+.nav-dd__trigger:hover{
+  border-color: rgba(255,79,216,.28);
+  box-shadow: 0 0 0 4px rgba(255,79,216,.10);
+  color: var(--pearl);
+}
+
+/* Le menu déroulant */
+.nav-dd__menu{
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 0;
+
+  min-width: 260px;
+  padding: 10px;
+  border-radius: var(--r-xl);
+
+  border: 1px solid rgba(255,255,255,.14);
+  background: rgba(15,15,25,.92);
+
+  backdrop-filter: blur(var(--blur));
+  -webkit-backdrop-filter: blur(var(--blur));
+  box-shadow: var(--shadow-card);
+
+  display: none;
+  z-index: 1000;
+}
+
+.nav-dd__menu a{
+  display: block;
+  padding: 10px 12px;
+  border-radius: 12px;
+
+  color: rgba(255,255,255,.86);
+  border: 1px solid transparent;
+  font-weight: 800;
+  font-size: 13px;
+}
+
+.nav-dd__menu a:hover{
+  background: rgba(255,79,216,.08);
+  border-color: rgba(255,79,216,.22);
+  color: var(--pearl);
+}
+
+/* Desktop: ouverture au survol */
+@media (hover: hover) and (pointer: fine){
+  .nav-dd:hover .nav-dd__menu{
+    display: block;
+  }
+}
+
+/* Mobile: le menu devient une liste visible quand le menu mobile est ouvert */
+@media (max-width: 860px){
+  .nav-dd{
+    display: block;
+    width: 100%;
+  }
+
+  .nav-dd__trigger{
+    width: 100%;
+    justify-content: center;
+  }
+
+  .nav-dd__menu{
+    position: static;
+    display: block;
+    margin-top: 10px;
+    min-width: 0;
+  }
+}
+
